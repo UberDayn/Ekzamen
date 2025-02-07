@@ -1,0 +1,3 @@
+#!/bin/bash
+
+mysql -u root -p'root' -h localhost < "/home/student/backups/all_databases_backup_20250206_110427.sql"
