@@ -1,0 +1,9 @@
+#!/bin/bash
+usernames=$(mysql -N -u root -p'root' -e "USE USERS_DB; SELECT username FROM Users;")
+while read -r username; do
+    encrypted_password=$(mysql -N -u root -p'root' -e "USE USERS_DB; SELECT password FROM Users WHERE username='$username';")
+    
+    decrypted_pw=$(echo "$encrypted_password" | openssl enc -aes-256-cbc -d -a -pass pass:root)
+    echo "Decrypted password for $username: $decrypted_pw"
+done <<< "$usernames"
+
