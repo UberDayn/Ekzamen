@@ -1,0 +1,12 @@
+#!/bin/bash
+usernames=$(mysql -N -u root -p'root' -e "USE USERS_DB; SELECT username FROM Users;")
+while read -r username; do
+    password=$(mysql -N -u root -p'root' -e "USE USERS_DB; SELECT password FROM Users WHERE username='$username';")
+    echo "Original password for $username: $password"
+    
+    temp_pw=$(echo -n "$password" | openssl enc -aes-256-cbc -salt -a -pass pass:root)
+    echo "Encrypted password for $username: $temp_pw"
+    
+    mysql -u root -p'root' -e "USE USERS_DB; UPDATE Users SET password = '$temp_pw' WHERE username = '$username';"
+done <<< "$usernames"
+
